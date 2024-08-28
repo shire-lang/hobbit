@@ -283,19 +283,23 @@ ignore() {
     "$@"
 }
 
-RUSTUP_UPDATE_ROOT="${RUSTUP_UPDATE_ROOT:-https://shire.run/package/}"
+RUSTUP_UPDATE_ROOT="${RUSTUP_UPDATE_ROOT:-https://static.shire.run/}"
 
 main() {
   downloader --check
+  local artifactType=$1
+  local packageName=$2
+  echo $artifactType
 
-  local packageName=$1
-  echo $packageName
+  if [ "$artifactType" == "shire" ]; then
+      local _file="${packageName}.zip"
+  else
+      local _file="${packageName}.shire"
+  fi
 
-#  wget --https-only --secure-protocol=TLSv1_2 "$1" -O "$2" 2>&1
-   local _url="${RUSTUP_UPDATE_ROOT}/${packageName}.zip"
-   local _file="${packageName}.zip"
+  local _url="${RUSTUP_UPDATE_ROOT}/${artifactType}/${_file}"
 
-   ensure downloader "$_url" "$_file"
+  ensure downloader "$_url" "$_file"
 }
 
 main "$@" || exit 1
