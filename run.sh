@@ -291,7 +291,7 @@ main() {
   local packageName=$2
   echo $artifactType
 
-  if [ "$artifactType" == "shire" ]; then
+  if [ "$artifactType" == "package" ]; then
       local _file="${packageName}.zip"
   else
       local _file="${packageName}.shire"
@@ -300,6 +300,12 @@ main() {
   local _url="${RUSTUP_UPDATE_ROOT}/${artifactType}/${_file}"
 
   ensure downloader "$_url" "$_file"
+
+  #  extract _file if it is a zip file
+  if [ "$artifactType" == "package" ]; then
+      ensure unzip -o "$_file"
+      ignore rm -f "$_file"
+  fi
 }
 
 main "$@" || exit 1
