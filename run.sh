@@ -283,13 +283,12 @@ ignore() {
     "$@"
 }
 
-RUSTUP_UPDATE_ROOT="${RUSTUP_UPDATE_ROOT:-https://static.shire.run/}"
+SHIRE_ROOT="${SHIRE_ROOT:-https://static.shire.run}"
 
 main() {
   downloader --check
-  local artifactType=$1
-  local packageName=$2
-  echo $artifactType
+  local artifactType="$1"
+  local packageName="$2"
 
   if [ "$artifactType" == "package" ]; then
       local _file="${packageName}.zip"
@@ -297,9 +296,11 @@ main() {
       local _file="${packageName}.shire"
   fi
 
-  local _url="${RUSTUP_UPDATE_ROOT}/${artifactType}/${_file}"
+  local _url="${SHIRE_ROOT}/${artifactType}/${_file}"
 
+  echo "Downloaded $_url"
   ensure downloader "$_url" "$_file"
+#  log
 
   #  extract _file if it is a zip file
   if [ "$artifactType" == "package" ]; then
